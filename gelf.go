@@ -2,6 +2,7 @@ package formatters
 
 import (
 	"encoding/json"
+	"fmt"
 	"log/syslog"
 	"runtime"
 	"time"
@@ -81,7 +82,12 @@ func (f gelfFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 		if !protectedFields[key] {
 			key = "_" + key
 		}
-		gelfEntry[key] = value
+		switch typedVal := value.(type) {
+		case error:
+			gelfEntry[key] = typedVal.Error()
+		default:
+			gelfEntry[key] = fmt.Sprintf("%s", typedVal)
+		}
 	}
 	message, err := json.Marshal(gelfEntry)
 	return append(message, '\n'), err
