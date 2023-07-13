@@ -86,7 +86,7 @@ func (f gelfFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 		case error:
 			gelfEntry[key] = typedVal.Error()
 		default:
-			gelfEntry[key] = fmt.Sprintf("%s", typedVal)
+			gelfEntry[key] = fmt.Sprintf("%v", typedVal)
 		}
 	}
 	message, err := json.Marshal(gelfEntry)
